@@ -10,7 +10,7 @@ const dataSource = new DataSource({
     password: env.TYPEORM_PASSWORD,
     database: env.TYPEORM_DATABASE,
     migrations: [__dirname + '/migrations/*{.ts,.js}'],
-    entities: ["src/app/entities/*{.ts,.js}"],
+    entities: [ __dirname + "/../app/entities/*{.ts,.js}"],
 })
 
 // dataSource.initialize()

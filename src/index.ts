@@ -1,17 +1,11 @@
 import express from 'express'
+import mainRouter from './routes/main-router'
+import corsConfig from './config/corsConfig'
 
 const app = express()
 
-app.get("/", (req, res, next) => {
-  return res.status(200).json({
-    message: "Hello from root!",
-  });
-});
-
-app.get("/hello", (req, res, next) => {
-  return res.status(200).json({
-    message: "Hello from path!",
-  });
-});
+app.use(mainRouter)
+app.use(express.json())
+app.use(corsConfig)
 
 export default app

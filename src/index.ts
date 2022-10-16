@@ -4,8 +4,8 @@ import corsConfig from './config/corsConfig'
 
 const app = express()
 
+app.use(corsConfig)
 app.use(mainRouter)
 app.use(express.json())
-app.use(corsConfig)
 
 export default app

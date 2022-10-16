@@ -10,6 +10,8 @@ provider:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     NODE_OPTIONS: --enable-source-maps --stack-trace-limit=1000 --experimental-modules --es-module-specifier-resolution=node
 
+useDotenv: true
+
 functions:
   api:
     handler: handler.handler
@@ -18,3 +20,4 @@ functions:
 
 plugins:
  - serverless-plugin-typescript
+ - serverless-dotenv-plugin

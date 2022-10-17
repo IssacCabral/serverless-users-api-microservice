@@ -6,6 +6,7 @@ export class GetAllUsersService{
     const connection = await dataSource.initialize()
     const usersRepository = connection.getRepository(User)
     const users = await usersRepository.find()
+    
     await connection.destroy()
     return users
   }

@@ -20,10 +20,7 @@ export class CreateUserService{
       return new Error('email duplicated')
     } 
 
-    const salt = bcrypt.genSaltSync(10)
-    const hash = bcrypt.hashSync(data.password, salt)
-
-    const user = usersRepository.create({...data, password: hash})
+    const user = usersRepository.create(data)
     await usersRepository.save(user)
 
     await connection.destroy()

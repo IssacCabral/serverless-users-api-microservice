@@ -10,6 +10,6 @@ app.use(corsConfig)
 app.use(json())
 app.use(mainRouter)
 
-//app.listen(3000)
+app.listen(3000)
 
-export default app
+//export default app

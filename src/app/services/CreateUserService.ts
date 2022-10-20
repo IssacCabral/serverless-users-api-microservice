@@ -27,7 +27,7 @@ export class CreateUserService{
 
     try{
       const createUserOnAuthMicroservice = await axios.post('http://localhost:3000/users', {email: data.email, password: data.password})
-
+      console.log(createUserOnAuthMicroservice.data)
     } catch(error){
       return error?.response?.data
     } 

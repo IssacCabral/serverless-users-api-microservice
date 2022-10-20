@@ -1,7 +1,7 @@
 import { User } from "../entities/User";
 import { CreateUserDTO } from "./dtos/CreateUserDTO";
 import dataSource from "../../database/data-source";
-import bcrypt from 'bcrypt'
+import axios from 'axios'
 
 export class CreateUserService{
   async execute(data: CreateUserDTO): Promise<User | Error>{
@@ -24,6 +24,13 @@ export class CreateUserService{
     await usersRepository.save(user)
 
     await connection.destroy()
+
+    try{
+      const createUserOnAuthMicroservice = await axios.post('http://localhost:3000/users', {email: data.email, password: data.password})
+
+    } catch(error){
+      return error?.response?.data
+    } 
 
     const userWithoutPassword: User = {...user, password: undefined as any}
 

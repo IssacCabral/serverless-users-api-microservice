@@ -2,9 +2,10 @@ import { UpdateUserDTO } from "./dtos/UpdateUserDTO";
 import { User } from "../entities/User";
 import dataSource from "../../database/data-source";
 import { Repository } from "typeorm";
+import axios from "axios";
 
 export class UpdateUserService {
-  async execute(userId: number, data: UpdateUserDTO): Promise<User | Error> {
+  async execute(userId: number, data: UpdateUserDTO, authenticatedUserEmail?: string): Promise<User | Error> {
     const connection = await dataSource.initialize();
     const usersRepository = connection.getRepository(User);
 
@@ -14,11 +15,22 @@ export class UpdateUserService {
       return new Error("user not found");
     }
 
+    /**find authenticated User for verify if is the same user */
+    // const authenticatedUser = await usersRepository.findOne({where: {email: authenticatedUserEmail}})
+
+    // if(authenticatedUser?.id !== user.id){
+    //   await connection.destroy()
+    //   return new Error('you do not have permissions to update other user')
+    // }
+
     const validate = await this.checkIfExistsDuplicateUniqueField(userId, data, usersRepository)
     if(validate instanceof Error){
       await connection.destroy()
       return validate
     }
+
+    // update email or password on auth microservice
+    await this.checkIfEmailOrPasswordIsProvided(user.email, data)
 
     await usersRepository.update({id: userId}, {...data})
 
@@ -37,6 +49,24 @@ export class UpdateUserService {
     if(Object.keys(data).includes('email')){
         const user = await repository.findOneBy({email: data.email})
         if((user) && (user.id != userId)) return new Error('the email must be unique')
+    }
+  }
+
+  private async checkIfEmailOrPasswordIsProvided(userEmail: string, data: UpdateUserDTO){
+    if(data.email && !data.password){
+      try{
+        await axios.patch(`http://localhost:3000/users/${userEmail}`, {email: data.email})
+      } catch(error){
+        return error?.response?.data
+      }
+    }
+    if(data.password && !data.email){
+      await axios.patch(`http://localhost:3000/users/${userEmail}`, {password: data.password})
+      return
+    }
+    if(data.password && data.email){
+      await axios.patch(`http://localhost:3000/users/${userEmail}`, {email: data.email, password: data.password})
+      return
     }
   }
 

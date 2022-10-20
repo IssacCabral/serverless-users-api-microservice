@@ -26,7 +26,7 @@ export class UpdateUserController{
     }
 
     const updateUserService = new UpdateUserService()
-    const result = await updateUserService.execute(userId, request.body)
+    const result = await updateUserService.execute(userId, request.body, request.user.email)
 
     return result instanceof Error ? response.status(400).json(result.message) : response.status(200).json(result)
   }

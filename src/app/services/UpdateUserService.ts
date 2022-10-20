@@ -3,6 +3,7 @@ import { User } from "../entities/User";
 import dataSource from "../../database/data-source";
 import { Repository } from "typeorm";
 import axios from "axios";
+import env from "../../config/env";
 
 export class UpdateUserService {
   async execute(userId: number, data: UpdateUserDTO, authenticatedUserEmail?: string): Promise<User | Error> {
@@ -14,14 +15,6 @@ export class UpdateUserService {
       await connection.destroy();
       return new Error("user not found");
     }
-
-    /**find authenticated User for verify if is the same user */
-    // const authenticatedUser = await usersRepository.findOne({where: {email: authenticatedUserEmail}})
-
-    // if(authenticatedUser?.id !== user.id){
-    //   await connection.destroy()
-    //   return new Error('you do not have permissions to update other user')
-    // }
 
     const validate = await this.checkIfExistsDuplicateUniqueField(userId, data, usersRepository)
     if(validate instanceof Error){
@@ -55,17 +48,25 @@ export class UpdateUserService {
   private async checkIfEmailOrPasswordIsProvided(userEmail: string, data: UpdateUserDTO){
     if(data.email && !data.password){
       try{
-        await axios.patch(`http://localhost:3000/users/${userEmail}`, {email: data.email})
+        await axios.patch(`${env.AUTH_SERVICE_URL}/users/${userEmail}`, {email: data.email})
       } catch(error){
         return error?.response?.data
       }
     }
     if(data.password && !data.email){
-      await axios.patch(`http://localhost:3000/users/${userEmail}`, {password: data.password})
+      try{
+        await axios.patch(`${env.AUTH_SERVICE_URL}/users/${userEmail}`, {password: data.password})
+      } catch(error){
+        return error?.response?.data
+      }
       return
     }
     if(data.password && data.email){
-      await axios.patch(`http://localhost:3000/users/${userEmail}`, {email: data.email, password: data.password})
+      try{
+        await axios.patch(`${env.AUTH_SERVICE_URL}/users/${userEmail}`, {email: data.email, password: data.password})
+      } catch(error){
+        return error?.response?.data
+      }
       return
     }
   }

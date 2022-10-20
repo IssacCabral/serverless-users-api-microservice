@@ -2,6 +2,7 @@ import { User } from "../entities/User";
 import { CreateUserDTO } from "./dtos/CreateUserDTO";
 import dataSource from "../../database/data-source";
 import axios from 'axios'
+import env from "../../config/env";
 
 export class CreateUserService{
   async execute(data: CreateUserDTO): Promise<User | Error>{
@@ -26,7 +27,7 @@ export class CreateUserService{
     await connection.destroy()
 
     try{
-      const createUserOnAuthMicroservice = await axios.post('http://localhost:3000/users', {email: data.email, password: data.password})
+      const createUserOnAuthMicroservice = await axios.post(`${env.AUTH_SERVICE_URL}/users`, {email: data.email, password: data.password})
     } catch(error){
       return error?.response?.data
     } 

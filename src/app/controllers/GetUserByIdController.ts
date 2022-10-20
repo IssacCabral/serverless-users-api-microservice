@@ -8,6 +8,6 @@ export class GetUserByIdController{
     const getUserByIdService = new GetUserByIdService()
     const result = await getUserByIdService.execute(Number(userId))
     
-    return result instanceof Error ? response.status(400).json(result.message) : response.status(200).json(result)
+    return result instanceof Error ? response.status(404).json(result.message) : response.status(200).json(result)
   }
 }

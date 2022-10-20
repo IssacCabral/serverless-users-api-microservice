@@ -1,5 +1,6 @@
 import { User } from "../entities/User";
 import dataSource from "../../database/data-source";
+import axios from "axios";
 
 export class DeleteUserService{
   async execute(userId: number): Promise<Error | undefined>{
@@ -12,7 +13,14 @@ export class DeleteUserService{
       return new Error('user not found')
     }
 
+    const userEmail = user.email
     await usersRepository.delete(user)
     await connection.destroy()
+
+    try{
+      await axios.delete(`http://localhost:3000/users/${userEmail}`)
+    } catch(error){
+      return error?.response?.data
+    } 
   }
 }

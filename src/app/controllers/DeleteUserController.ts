@@ -9,7 +9,7 @@ export class DeleteUserController{
     const result = await deleteUserService.execute(Number(userId))
 
     return result instanceof Error ? 
-      response.status(404).json(result.message) :
+      response.status(404).json({message: result.message}) :
       response.status(200).json({message: 'successfully deleted'})
   }
 }

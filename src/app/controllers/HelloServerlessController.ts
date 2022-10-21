@@ -7,7 +7,7 @@ export class HelloServerlessController{
     const result = await helloServerlessService.execute(request.user.email)
 
     return result instanceof Error ? 
-      response.status(404).json(result.message) : 
+      response.status(404).json({message: result.message}) : 
       response.status(200).json({hello: `Welcome to serverless ${result}`})
   }
 }

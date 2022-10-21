@@ -42,7 +42,7 @@ export class CreateUserController{
     const createUserService = new CreateUserService()
     const result = await createUserService.execute(request.body)
 
-    return result instanceof Error ? response.status(400).json(result.message) : response.status(201).json(result)
+    return result instanceof Error ? response.status(400).json({message: result.message}) : response.status(201).json(result)
   }
 
 }
